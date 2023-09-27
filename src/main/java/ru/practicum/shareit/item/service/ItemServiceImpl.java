@@ -10,12 +10,10 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-
 import javax.validation.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import static ru.practicum.shareit.item.mapper.ItemMapper.*;
 
 @Service
@@ -83,7 +81,6 @@ public class ItemServiceImpl implements ItemService {
         }
         log.info("Найдена вещь по ключевому слову: " + text);
         String lowerCaseText = text.toLowerCase();
-        //check
         return itemRepository.findAllItems().stream()
                 .filter(i -> i.getAvailable() &&
                         (i.getName().toLowerCase().contains(lowerCaseText) ||

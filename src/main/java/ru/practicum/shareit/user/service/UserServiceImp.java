@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-
 import javax.validation.ValidationException;
 import java.util.List;
-
 import static ru.practicum.shareit.user.mapper.UserMapper.*;
 
 @Service
