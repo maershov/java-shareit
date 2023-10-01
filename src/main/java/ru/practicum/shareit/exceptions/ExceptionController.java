@@ -40,4 +40,11 @@ public class ExceptionController {
         log.debug("400: Entity Not Found");
         return new ErrorResponse("Запись не найдена", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleConflict(final ConflictException e) {
+        log.debug("409: Conflict");
+        return new ErrorResponse("Произошел конфликт при записи", e.getMessage());
+    }
 }
