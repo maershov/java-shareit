@@ -139,10 +139,12 @@ public class ItemServiceImpl implements ItemService {
         return userRepository.findById(userId).orElseThrow(() ->
                 new ModelNotFoundException("Неверный ID пользователя."));
     }
+
     private Item getById(Long itemId) {
         return itemRepository.findById(itemId).orElseThrow(() ->
                 new ModelNotFoundException("Неверный ID."));
     }
+
     private Item updateItemFields(Item item, ItemDto itemDto) {
         if (itemDto.getName() != null && !itemDto.getName().equals(item.getName())) {
             item.setName(itemDto.getName());

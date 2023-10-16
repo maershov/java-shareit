@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.practicum.shareit.exceptions.model.ErrorResponse;
-import javax.validation.ConstraintViolationException;
-import javax.validation.ValidationException;
 import java.util.Objects;
 
 @RestControllerAdvice

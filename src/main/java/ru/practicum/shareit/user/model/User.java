@@ -14,11 +14,11 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
 
     @NotBlank
