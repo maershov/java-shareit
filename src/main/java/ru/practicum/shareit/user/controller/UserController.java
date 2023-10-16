@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
+
+import javax.validation.Valid;
 import java.util.List;
 
 
@@ -18,30 +20,30 @@ public class UserController {
     @GetMapping
     public List<UserDto> findAllUsers() {
         log.info("Получен список всех пользователей.");
-        return userService.getAllUsers();
+        return userService.findAllUsers();
     }
 
     @PostMapping
-    public UserDto createUser(@RequestBody UserDto userDto) {
+    public UserDto createUser(@RequestBody @Valid UserDto userDto) {
         log.info("Пользователь сохранен.");
         return userService.createUser(userDto);
     }
 
-    @PatchMapping("/{userId}")
-    public UserDto updateUser(@PathVariable int userId, @RequestBody UserDto userDto) {
-        log.info("Данные пользователя с id: " + userId + "обновлены.");
-        return userService.updateUser(userDto, userId);
+    @PatchMapping("/{id}")
+    public UserDto updateUser(@PathVariable(value = "id") Long id, @RequestBody UserDto userDto) {
+        log.info("Данные пользователя с id: " + id + "обновлены.");
+        return userService.updateUser(id, userDto);
     }
 
-    @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable int userId) {
-        log.info("Пользователь с id: " + userId + " удален.");
-        userService.deleteUser(userId);
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable(value = "id") Long id) {
+        log.info("Пользователь с id: " + id + " удален.");
+        userService.deleteUser(id);
     }
 
-    @GetMapping("/{userId}")
-    public UserDto getUserById(@PathVariable int userId) {
-        log.info("Получен пользователь с ID: " + userId);
-        return userService.getUserById(userId);
+    @GetMapping("/{id}")
+    public UserDto getUserById(@PathVariable(value = "id") Long id) {
+        log.info("Получен пользователь с ID: " + id);
+        return userService.getUserById(id);
     }
 }

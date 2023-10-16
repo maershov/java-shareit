@@ -2,49 +2,59 @@ package ru.practicum.shareit.exceptions;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.practicum.shareit.exceptions.model.ErrorResponse;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
+import java.util.Objects;
 
 @RestControllerAdvice
 @Slf4j
 public class ExceptionController {
 
-    @ExceptionHandler
+    @ExceptionHandler({ModelNotFoundException.class, UserHaveNotAccessException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFound(final NotFoundException e) {
-        log.debug("400: Entity Not Found");
-        return new ErrorResponse("Запись не найдена", e.getMessage());
+    public ErrorResponse handleNotFoundExceptions(final RuntimeException e) {
+        log.error("Model Not Found Exception");
+        return new ErrorResponse("Данные отсутствуют!", e.getMessage());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidate(final ValidationException e) {
-        log.debug("Validation error");
-        return new ErrorResponse("Ошибка валидации", e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleException(final Throwable e) {
-        log.debug("500: Interval Server Error");
-        return new ErrorResponse("Interval Server Error", "Произошла внутрення ошибка");
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleNotFoundConstraintViolation(final ConstraintViolationException e) {
-        log.debug("400: Entity Not Found");
-        return new ErrorResponse("Запись не найдена", e.getMessage());
-    }
-
-    @ExceptionHandler
+    @ExceptionHandler({EmailAlreadyExistException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleConflict(final ConflictException e) {
-        log.debug("409: Conflict");
-        return new ErrorResponse("Произошел конфликт при записи", e.getMessage());
+    public ErrorResponse handleConflictException(final RuntimeException e) {
+        log.error("Email Already Exists Exception");
+        return new ErrorResponse("Уникальные данные уже имеются!", e.getMessage());
+    }
+
+    @ExceptionHandler({InvalidBookingException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidBookingException(final InvalidBookingException e) {
+        log.error("Invalid Booking Exception");
+        return new ErrorResponse(e.getMessage(), e.getMessage());
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMethodArgumentNotValidExceptions(final MethodArgumentNotValidException e) {
+        log.error("Argument Not Valid Exception");
+        return new ErrorResponse("Передан некорректный объект!", e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        log.error("Type Mismatch Exception");
+        return new ErrorResponse("Unknown state: " + Objects.requireNonNull(e.getValue()), e.getMessage());
+    }
+
+    @ExceptionHandler(Throwable.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleException(final Exception e) {
+        log.error("Internal Server Error");
+        return new ErrorResponse("Неизвестная ошибка!", e.getMessage());
     }
 }
