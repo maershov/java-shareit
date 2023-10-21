@@ -44,7 +44,6 @@ public class BookingController {
     public List<BookingDto> findByBooker(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
                                          @RequestParam(
                                                  value = "state",
-                                                 required = false,
                                                  defaultValue = "ALL") BookingState state) {
         log.info("Получен список всех бронирований пользователя с id " + userId);
         return bookingService.findByBooker(userId, state);
@@ -54,7 +53,6 @@ public class BookingController {
     public List<BookingDto> findByOwner(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
                                         @RequestParam(
                                                 value = "state",
-                                                required = false,
                                                 defaultValue = "ALL") BookingState state) {
         log.info("Получен список всех бронирований для всех вещей пользователя с id " + userId);
         return bookingService.findByOwner(userId, state);

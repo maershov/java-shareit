@@ -1,13 +1,15 @@
 package ru.practicum.shareit.booking.model;
 
 import lombok.*;
+import org.springframework.context.annotation.Bean;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
