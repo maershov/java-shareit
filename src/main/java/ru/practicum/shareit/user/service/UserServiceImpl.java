@@ -23,7 +23,7 @@ import static ru.practicum.shareit.user.mapper.UserMapper.*;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserServiceImp implements UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
@@ -37,8 +37,10 @@ public class UserServiceImp implements UserService {
     @Override
     @Transactional
     public UserDto createUser(UserDto userDto) {
+        User newUser = toUser(userDto);
+        checksUser(newUser, userDto);
         log.info("Пользователь сохранен.");
-        return toUserDto(userRepository.save(toUser(userDto)));
+        return toUserDto(userRepository.save(newUser));
     }
 
     @Override
