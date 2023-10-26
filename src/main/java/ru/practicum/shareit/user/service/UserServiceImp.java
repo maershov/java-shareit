@@ -2,13 +2,22 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exceptions.ConflictException;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.exceptions.EmailAlreadyExistException;
+import ru.practicum.shareit.exceptions.ModelNotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
-import javax.validation.ValidationException;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.util.List;
+import java.util.Set;
+
 import static ru.practicum.shareit.user.mapper.UserMapper.*;
 
 @Service
@@ -19,65 +28,75 @@ public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public List<UserDto> getAllUsers() {
+    @Transactional(readOnly = true)
+    public List<UserDto> findAllUsers() {
         log.info("Получен список всех пользователей.");
-        return getUserDtoList(userRepository.findAllUsers());
+        return getUserDtoList(userRepository.findAll());
     }
 
     @Override
+    @Transactional
     public UserDto createUser(UserDto userDto) {
-        User user = toUser(userDto);
-        checkUser(user);
-        checkEmail(user);
         log.info("Пользователь сохранен.");
-        return toUserDto(userRepository.createUser(user));
+        return toUserDto(userRepository.save(toUser(userDto)));
     }
 
     @Override
-    public UserDto updateUser(UserDto userDto, int id) {
-        User userToUpdate = userRepository.getUserById(id);
-        User user = toUser(userDto);
-
-        if (user.getName() != null) {
-            userToUpdate.setName(user.getName());
-        }
-        if (user.getEmail() != null) {
-            if (!user.getEmail().equals(userToUpdate.getEmail())) {
-                checkEmail(user);
-            }
-            userToUpdate.setEmail(user.getEmail());
+    @Transactional
+    public UserDto updateUser(Long id, UserDto userDto) {
+        User user = getById(id);
+        if (userDto.getEmail() != null && !userDto.getEmail().equals(user.getEmail())) {
+            checkEmailExistException(userDto.getEmail());
         }
         log.info("Данные пользователя обновлены.");
-        return toUserDto(userRepository.updateUser(userToUpdate));
+        return toUserDto(userRepository.save(checksUser(user, userDto)));
     }
 
     @Override
-    public UserDto getUserById(int userId) {
+    @Transactional(readOnly = true)
+    public UserDto getUserById(Long userId) {
+        User user = getById(userId);
         log.info("Получен пользователь с ID: " + userId);
-        return toUserDto(userRepository.getUserById(userId));
+        return toUserDto(user);
     }
 
     @Override
-    public void deleteUser(int userId) {
-        userRepository.deleteUser(userId);
+    @Transactional
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
         log.info("Пользователь удален.");
     }
 
-    private void checkEmail(User user) {
-        boolean emailExists = userRepository.findAllUsers().stream()
-                .filter(u -> u.getId() != user.getId())
-                .anyMatch(u -> u.getEmail().equals(user.getEmail()));
-        if (emailExists) {
-            throw new ConflictException("Пользователь с таким адресом электронной почты уже существует.");
+    private User checksUser(User user, UserDto userDto) {
+        if (userDto.getName() != null && !userDto.getName().equals(user.getName())) {
+            user.setName(userDto.getName());
+        }
+        if (userDto.getEmail() != null && !userDto.getEmail().equals(user.getEmail())) {
+            user.setEmail(userDto.getEmail());
+        }
+        isValid(user);
+        return user;
+    }
+
+    private void checkEmailExistException(String email) {
+        if (userRepository.findAll().stream().anyMatch(a -> a.getEmail().equals(email)))
+            throw new EmailAlreadyExistException("Электронная почта уже зарегистрирована!");
+    }
+
+    private void isValid(User user) {
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        if (!violations.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Переданы некорректные данные для обновления!");
         }
     }
 
-    private void checkUser(User user) {
-        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
-            throw new ValidationException("Электронная почта не может быть пустой и должна содержать символ @.");
-        }
-        if (user.getName() == null || user.getName().isBlank()) {
-            throw new ValidationException("Имя пользователя не может быть пустым.");
-        }
+    private User getById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ModelNotFoundException(
+                        String.format("Пользователь с id - %d не найден!", userId)
+                ));
     }
+
 }
+
