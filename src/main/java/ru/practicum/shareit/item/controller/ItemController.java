@@ -8,7 +8,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -40,16 +41,16 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getItemListByUserId(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                             @RequestParam(defaultValue = "0") @Min(0) int from,
-                                             @RequestParam(defaultValue = "20") @Min(1) int size) {
+                                             @RequestParam(defaultValue = "0") @PositiveOrZero(message = "Отсчет страницы должен быть значением >= 0") int from,
+                                             @RequestParam(defaultValue = "20") @Positive(message = "Размер страницы должен быть значением > 0") int size) {
         log.info("Получен список всех вещей пользователя с ID: " + userId);
         return itemService.getItemListByUserId(userId, from, size);
     }
 
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam(value = "text") String text,
-                                @RequestParam(defaultValue = "0") @Min(0) int from,
-                                @RequestParam(defaultValue = "20") @Min(1) int size) {
+                                @RequestParam(defaultValue = "0") @PositiveOrZero(message = "Отсчет страницы должен быть значением >= 0") int from,
+                                @RequestParam(defaultValue = "20") @Positive(message = "Размер страницы должен быть значением > 0") int size) {
         log.info("Найдена вещь по ключевому слову: " + text);
         return itemService.search(text, from, size);
     }

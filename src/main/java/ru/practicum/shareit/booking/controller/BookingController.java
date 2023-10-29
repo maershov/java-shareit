@@ -11,6 +11,8 @@ import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -46,8 +48,12 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> findByBooker(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
                                          @RequestParam(defaultValue = "ALL") BookingState state,
-                                         @RequestParam(defaultValue = "0") @Min(0) int from,
-                                         @RequestParam(defaultValue = "20") @Min(1) int size) {
+                                         @RequestParam(defaultValue = "0")
+                                         @PositiveOrZero(message = "Отсчет страницы должен быть значением >= 0")
+                                         int from,
+                                         @RequestParam(defaultValue = "20")
+                                         @Positive(message = "Размер страницы должен быть значением > 0")
+                                         int size) {
         log.info("Получен список всех бронирований пользователя с id " + userId);
         return bookingService.findByBooker(userId, state, from, size);
     }
@@ -55,8 +61,8 @@ public class BookingController {
     @GetMapping(path = "/owner")
     public List<BookingDto> findByOwner(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
                                         @RequestParam(defaultValue = "ALL") BookingState state,
-                                        @RequestParam(defaultValue = "0") @Min(0) int from,
-                                        @RequestParam(defaultValue = "20") @Min(1) int size) {
+                                        @RequestParam(defaultValue = "0") @PositiveOrZero(message = "Отсчет страницы должен быть значением >= 0") int from,
+                                        @RequestParam(defaultValue = "20") @Positive(message = "Размер страницы должен быть значением > 0") int size) {
         log.info("Получен список всех бронирований для всех вещей пользователя с id " + userId);
         return bookingService.findByOwner(userId, state, from, size);
     }
