@@ -9,7 +9,6 @@ import ru.practicum.shareit.user.service.UserService;
 import javax.validation.Valid;
 import java.util.List;
 
-
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -29,21 +28,21 @@ public class UserController {
         return userService.createUser(userDto);
     }
 
-    @PatchMapping("/{id}")
-    public UserDto updateUser(@PathVariable(value = "id") Long id, @RequestBody UserDto userDto) {
-        log.info("Данные пользователя с id: " + id + "обновлены.");
-        return userService.updateUser(id, userDto);
+    @PatchMapping("/{userId}")
+    public UserDto updateUser(@PathVariable Long userId, @RequestBody UserDto userDto) {
+        log.info("Данные пользователя с id: " + userId + "обновлены.");
+        return userService.updateUser(userId, userDto);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable(value = "id") Long id) {
-        log.info("Пользователь с id: " + id + " удален.");
-        userService.deleteUser(id);
+    @DeleteMapping("/{userId}")
+    public void deleteUser(@PathVariable Long userId) {
+        log.info("Пользователь с id: " + userId + " удален.");
+        userService.deleteUser(userId);
     }
 
-    @GetMapping("/{id}")
-    public UserDto getUserById(@PathVariable(value = "id") Long id) {
-        log.info("Получен пользователь с ID: " + id);
-        return userService.getUserById(id);
+    @GetMapping("/{userId}")
+    public UserDto getUserById(@PathVariable Long userId) {
+        log.info("Получен пользователь с ID: " + userId);
+        return userService.getUserById(userId);
     }
 }

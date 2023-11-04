@@ -7,18 +7,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import ru.practicum.shareit.exceptions.model.ErrorResponse;
+
 import java.util.Objects;
 
 @RestControllerAdvice
 @Slf4j
-public class ExceptionController {
+public class ErrorHandler {
 
     @ExceptionHandler({ModelNotFoundException.class, UserHaveNotAccessException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundExceptions(final RuntimeException e) {
         log.error("Model Not Found Exception");
-        return new ErrorResponse("Данные отсутствуют!", e.getMessage());
+        return new ErrorResponse(e.getMessage(), e.getMessage());
     }
 
     @ExceptionHandler({EmailAlreadyExistException.class})

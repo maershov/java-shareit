@@ -26,17 +26,14 @@ public class Booking {
     @Column(name = "end_time")
     private LocalDateTime end;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude
+    @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude
+    @ManyToOne
     @JoinColumn(name = "booker_id")
     private User booker;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "status")
     private BookingStatus status;
 }
