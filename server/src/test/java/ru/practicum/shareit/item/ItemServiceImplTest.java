@@ -7,8 +7,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.TransactionSystemException;
-import ru.practicum.shareit.exceptions.ModelNotFoundException;
-import ru.practicum.shareit.exceptions.UserHaveNotAccessException;
+import ru.practicum.shareit.error.ModelNotFoundException;
+import ru.practicum.shareit.error.UserHaveNotAccessException;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;

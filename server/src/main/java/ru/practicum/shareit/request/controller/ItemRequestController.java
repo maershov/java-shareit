@@ -32,12 +32,8 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public List<ItemRequestDto> getAllItemRequests(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                                   @RequestParam(defaultValue = "0")
-                                                   @PositiveOrZero(message = "Отсчет страницы должен быть значением >= 0")
-                                                   int from,
-                                                   @RequestParam(defaultValue = "20")
-                                                   @Positive(message = "Размер страницы должен быть значением > 0")
-                                                   int size) {
+                                                   @RequestParam(defaultValue = "0") @PositiveOrZero(message = "Отсчет страницы должен быть значением >= 0") int from,
+                                                   @RequestParam(defaultValue = "20") @Positive(message = "Размер страницы должен быть значением > 0") int size) {
         return itemRequestService.getAllItemRequests(userId, from, size);
     }
 

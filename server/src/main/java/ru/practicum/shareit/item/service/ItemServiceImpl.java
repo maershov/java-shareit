@@ -13,9 +13,9 @@ import ru.practicum.shareit.booking.dto.BookingShortDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.exceptions.InvalidBookingException;
-import ru.practicum.shareit.exceptions.ModelNotFoundException;
-import ru.practicum.shareit.exceptions.UserHaveNotAccessException;
+import ru.practicum.shareit.error.InvalidBookingException;
+import ru.practicum.shareit.error.ModelNotFoundException;
+import ru.practicum.shareit.error.UserHaveNotAccessException;
 import ru.practicum.shareit.comment.dto.CommentDto;
 import ru.practicum.shareit.comment.model.Comment;
 import ru.practicum.shareit.comment.repository.CommentRepository;
@@ -80,7 +80,7 @@ public class ItemServiceImpl implements ItemService {
         }
         Item updatedItem = itemRepository.save(checksItems(item, itemDto));
         log.info("Вещь с id " + updatedItem.getId() + " обновлена");
-        return ItemMapper.toItemDto(updatedItem);
+        return toItemDto(updatedItem);
     }
 
     @Override

@@ -47,12 +47,8 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> findByBooker(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
                                          @RequestParam(defaultValue = "ALL") BookingState state,
-                                         @RequestParam(defaultValue = "0")
-                                         @PositiveOrZero(message = "Отсчет страницы должен быть значением >= 0")
-                                         int from,
-                                         @RequestParam(defaultValue = "20")
-                                         @Positive(message = "Размер страницы должен быть значением > 0")
-                                         int size) {
+                                         @RequestParam(defaultValue = "0") @PositiveOrZero(message = "Отсчет страницы должен быть значением >= 0") int from,
+                                         @RequestParam(defaultValue = "20") @Positive(message = "Размер страницы должен быть значением > 0") int size) {
         log.info("Получен список всех бронирований пользователя с id " + userId);
         return bookingService.findByBooker(userId, state, from, size);
     }

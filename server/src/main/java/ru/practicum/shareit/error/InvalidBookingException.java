@@ -1,4 +1,4 @@
-package ru.practicum.shareit.exceptions;
+package ru.practicum.shareit.error;
 
 public class InvalidBookingException extends RuntimeException {
 
