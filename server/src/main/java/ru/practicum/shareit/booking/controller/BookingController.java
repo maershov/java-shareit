@@ -8,6 +8,8 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.service.BookingService;
+
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,7 +22,7 @@ public class BookingController {
 
     @PostMapping
     public BookingDto createBooking(@RequestHeader(value = "X-Sharer-User-Id") Long userId,
-                                    @RequestBody BookingRequestDto bookingRequestDto) {
+                                    @Valid @RequestBody BookingRequestDto bookingRequestDto) {
         log.info("Бронирование для пользователя с id " + userId + " создано");
         return bookingService.createBooking(userId, bookingRequestDto);
     }
