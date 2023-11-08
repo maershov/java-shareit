@@ -95,19 +95,6 @@ public class ItemRequestControllerTest {
     }
 
     @Test
-    void createItemRequestWithoutDescriptionExpectedStatus400() throws Exception {
-        ItemRequestDto badRequest = new ItemRequestDto(1L, null, timestamp1, null);
-
-        mvc.perform(post("/requests")
-                        .content(mapper.writeValueAsString(badRequest))
-                        .characterEncoding(UTF_8)
-                        .contentType(APPLICATION_JSON)
-                        .accept(APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void getAllItemRequestByUserIdExpectedStatus200() throws Exception {
         when(itemRequestService.getAllItemRequestByUserId(1L)).thenReturn(List.of(itemRequestDto));
 
@@ -139,20 +126,6 @@ public class ItemRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].description", is(itemRequestDto.getDescription())));
-    }
-
-    @Test
-    void getAllItemRequestsWithWrongFromExpectedStatus500() throws Exception {
-        mvc.perform(get("/requests/all?from=-2&size=2")
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isInternalServerError());
-    }
-
-    @Test
-    void getAllRequestsWithWrongSizeExpectedStatus500() throws Exception {
-        mvc.perform(get("/requests/all?from=2&size=0")
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isInternalServerError());
     }
 
     @Test

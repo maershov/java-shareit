@@ -58,48 +58,6 @@ public class UserControllerTest {
     }
 
     @Test
-    void createUserWithoutNameExpectedStatus400() throws Exception {
-        UserDto userDto = new UserDto(3L, null, "ivan@yandex.ru");
-
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(userDto))
-                        .characterEncoding(UTF_8)
-                        .contentType(APPLICATION_JSON)
-                        .accept(APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(service);
-    }
-
-    @Test
-    void createUserWithoutEmailExpectedStatus400() throws Exception {
-        UserDto userDto = new UserDto(3L, "Ivan", null);
-
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(userDto))
-                        .characterEncoding(UTF_8)
-                        .contentType(APPLICATION_JSON)
-                        .accept(APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(service);
-    }
-
-    @Test
-    void createUserWithWrongEmailExpectedStatus400() throws Exception {
-        UserDto userDto = new UserDto(3L, "Ivan", "badEmail%yandex.ru");
-
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(userDto))
-                        .characterEncoding(UTF_8)
-                        .contentType(APPLICATION_JSON)
-                        .accept(APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-
-        verifyNoInteractions(service);
-    }
-
-    @Test
     void updateUserExpectedStatus200() throws Exception {
         dto1.setName("Anton");
         when(service.updateUser(any(), any())).thenReturn(dto1);

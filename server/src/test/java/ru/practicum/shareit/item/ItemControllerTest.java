@@ -91,44 +91,6 @@ public class ItemControllerTest {
     }
 
     @Test
-    void createItemWithoutNameExpectedStatus400() throws Exception {
-        ItemDto noName = ItemDto
-                .builder()
-                .id(2L)
-                .name(null)
-                .description("вещь без имени")
-                .available(true)
-                .build();
-
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(noName))
-                        .characterEncoding(UTF_8)
-                        .contentType(APPLICATION_JSON)
-                        .accept(APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void createItemWithoutDescriptionExpectedStatus400() throws Exception {
-        ItemDto noDesc = ItemDto
-                .builder()
-                .id(2L)
-                .name("Топор")
-                .description(null)
-                .available(true)
-                .build();
-
-        mvc.perform(post("/items")
-                        .content(mapper.writeValueAsString(noDesc))
-                        .characterEncoding(UTF_8)
-                        .contentType(APPLICATION_JSON)
-                        .accept(APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void updateItemExpectedStatus200() throws Exception {
         itemDto.setDescription("новое описание");
         when(itemService.updateItem(anyLong(), any(), anyLong()))

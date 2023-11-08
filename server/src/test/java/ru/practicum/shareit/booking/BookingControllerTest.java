@@ -105,45 +105,6 @@ public class BookingControllerTest {
     }
 
     @Test
-    void createBookingWithWrongStarExpectedStatus400() throws Exception {
-        BookingRequestDto noStart = new BookingRequestDto(past, end, 1L);
-
-        mvc.perform(post("/bookings")
-                        .content(mapper.writeValueAsString(noStart))
-                        .characterEncoding(UTF_8)
-                        .contentType(APPLICATION_JSON)
-                        .accept(APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void createBookingWithWrongEndExpectedStatus400() throws Exception {
-        BookingRequestDto noEnd = new BookingRequestDto(start, past, 1L);
-
-        mvc.perform(post("/bookings")
-                        .content(mapper.writeValueAsString(noEnd))
-                        .characterEncoding(UTF_8)
-                        .contentType(APPLICATION_JSON)
-                        .accept(APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void createBookingWithWrongItemIdExpectedStatus400() throws Exception {
-        BookingRequestDto noItem = new BookingRequestDto(start, end, null);
-
-        mvc.perform(post("/bookings")
-                        .content(mapper.writeValueAsString(noItem))
-                        .characterEncoding(UTF_8)
-                        .contentType(APPLICATION_JSON)
-                        .accept(APPLICATION_JSON)
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void createBookingExpectedStatus400() throws Exception {
         when(bookingService.createBooking(anyLong(), any()))
                 .thenThrow(new InvalidBookingException("Bad Request Exception"));
@@ -234,20 +195,6 @@ public class BookingControllerTest {
     }
 
     @Test
-    void findAllByBookerWithWrongFromExpectedStatus500() throws Exception {
-        mvc.perform(get("/bookings?state=WAITING&from=-2&size=2")
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isInternalServerError());
-    }
-
-    @Test
-    void findAllByBookerWithWrongSizeExpectedStatus500() throws Exception {
-        mvc.perform(get("/bookings?state=WAITING&from=2&size=0")
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isInternalServerError());
-    }
-
-    @Test
     void findAllByBookerExpectedStatus400() throws Exception {
         when(bookingService.findByBooker(anyLong(), any(BookingState.class), anyInt(), anyInt()))
                 .thenThrow(new InvalidBookingException("Bad Request Exception"));
@@ -278,20 +225,6 @@ public class BookingControllerTest {
                         .header("X-Sharer-User-Id", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
-    }
-
-    @Test
-    void findAllByOwnerWithWrongFromExpectedStatus400() throws Exception {
-        mvc.perform(get("/bookings/owner?state=WAITING&from=-2&size=2")
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isInternalServerError());
-    }
-
-    @Test
-    void findAllByOwnerWithWrongSizeExpectedStatus400() throws Exception {
-        mvc.perform(get("/bookings/owner?state=WAITING&from=2&size=0")
-                        .header("X-Sharer-User-Id", 1L))
-                .andExpect(status().isInternalServerError());
     }
 
     @Test
